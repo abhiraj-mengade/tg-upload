@@ -689,7 +689,10 @@ with client:
           filename = PurePath(args.path).name
           file_size, file_sha256, file_md5, creation_time, modification_time = file_info(args.path, caption)
           start_time = time()
-          client.send_photo(chat_id, args.path, parse_mode=parse_mode, caption=caption.format(file_name = PurePath(filename).stem, file_format = PurePath(filename).suffix, file_size_b = file_size, file_size_kb = file_size / 1024, file_size_mb = file_size / (1024 * 1024), file_size_gb = file_size / (1024 * 1024 * 1024), file_sha256 = file_sha256, file_md5 = file_md5, creation_time = creation_time, modification_time = modification_time, path = PurePath(args.path)), progress=upload_progress, disable_notification=args.silent, has_spoiler=args.spoiler, ttl_seconds=args.self_destruct, protect_content=args.protect, reply_to_message_id=args.reply_to)
+          if(file_size / (1024*1024)<10):
+            client.send_photo(chat_id, args.path, parse_mode=parse_mode, caption=caption.format(file_name = PurePath(filename).stem, file_format = PurePath(filename).suffix, file_size_b = file_size, file_size_kb = file_size / 1024, file_size_mb = file_size / (1024 * 1024), file_size_gb = file_size / (1024 * 1024 * 1024), file_sha256 = file_sha256, file_md5 = file_md5, creation_time = creation_time, modification_time = modification_time, path = PurePath(args.path)), progress=upload_progress, disable_notification=args.silent, has_spoiler=args.spoiler, ttl_seconds=args.self_destruct, protect_content=args.protect, reply_to_message_id=args.reply_to)
+          else:
+            client.send_document(chat_id, args.path, progress=upload_progress, parse_mode=parse_mode, caption=caption.format(file_name = PurePath(filename).stem, file_format = PurePath(filename).suffix, file_size_b = file_size, file_size_kb = file_size / 1024, file_size_mb = file_size / (1024 * 1024), file_size_gb = file_size / (1024 * 1024 * 1024), file_sha256 = file_sha256, file_md5 = file_md5, creation_time = creation_time, modification_time = modification_time, path = PurePath(args.path)), force_document=True, file_name=filename, thumb=args.thumb, disable_notification=args.silent, protect_content=args.protect, reply_to_message_id=args.reply_to)
           Path(args.path).unlink(missing_ok=True) if args.delete_on_done else None
         except Exception as error_code:
           print(f"\nAn error occured!\n{error_code}")
@@ -701,7 +704,11 @@ with client:
             try:
               file_size, file_sha256, file_md5, creation_time, modification_time = file_info(_path, caption)
               start_time = time()
-              client.send_photo(chat_id, _path, parse_mode=parse_mode, caption=caption.format(file_name = PurePath(filename).stem, file_format = PurePath(filename).suffix, file_size_b = file_size, file_size_kb = file_size / 1024, file_size_mb = file_size / (1024 * 1024), file_size_gb = file_size / (1024 * 1024 * 1024), file_sha256 = file_sha256, file_md5 = file_md5, creation_time = creation_time, modification_time = modification_time, path = PurePath(_path)), progress=upload_progress, disable_notification=args.silent, has_spoiler=args.spoiler, ttl_seconds=args.self_destruct, protect_content=args.protect, reply_to_message_id=args.reply_to)
+              print(file_size/(1024*1024))
+              if(file_size/(1024*1024) < 10):
+                client.send_photo(chat_id, _path, parse_mode=parse_mode, caption=caption.format(file_name = PurePath(filename).stem, file_format = PurePath(filename).suffix, file_size_b = file_size, file_size_kb = file_size / 1024, file_size_mb = file_size / (1024 * 1024), file_size_gb = file_size / (1024 * 1024 * 1024), file_sha256 = file_sha256, file_md5 = file_md5, creation_time = creation_time, modification_time = modification_time, path = PurePath(_path)), progress=upload_progress, disable_notification=args.silent, has_spoiler=args.spoiler, ttl_seconds=args.self_destruct, protect_content=args.protect, reply_to_message_id=args.reply_to)
+              else:
+                client.send_document(chat_id, _path, progress=upload_progress, parse_mode=parse_mode, caption=caption.format(file_name = PurePath(filename).stem, file_format = PurePath(filename).suffix, file_size_b = file_size, file_size_kb = file_size / 1024, file_size_mb = file_size / (1024 * 1024), file_size_gb = file_size / (1024 * 1024 * 1024), file_sha256 = file_sha256, file_md5 = file_md5, creation_time = creation_time, modification_time = modification_time, path = PurePath(args.path)), force_document=True, file_name=filename, thumb=args.thumb, disable_notification=args.silent, protect_content=args.protect, reply_to_message_id=args.reply_to)
               Path(_path).unlink(missing_ok=True) if args.delete_on_done else None
             except Exception as error_code:
               print(f"\nAn error occured!\n{error_code}")
